@@ -13,7 +13,6 @@ interface Episodes {
   members: string
   published_at: string
   thumbnail: string
-  description: string
   durationAsString: string
 
   file: {
@@ -48,7 +47,6 @@ export default async function Home() {
         durationAsString: convertDurationToTimeString(
           Number(episode.file.duration),
         ),
-        description: episode.description,
         url: episode.file.url,
       }
     })
@@ -73,7 +71,7 @@ export default async function Home() {
             return (
               <li
                 key={episode.id}
-                className="relative flex items-center rounded-s-3xl border border-pod-gray-100 bg-white p-5"
+                className="relative flex items-center rounded-3xl border border-pod-gray-100 bg-white p-5"
               >
                 <Image
                   width={192}
@@ -117,7 +115,73 @@ export default async function Home() {
           })}
         </ul>
       </section>
-      <section></section>
+
+      <section className="pb-8">
+        <h2 className="pb-4 pt-10 font-alt font-semibold text-pod-gray-800">
+          Todos episódios
+        </h2>
+
+        <table cellSpacing={0} className="w-full">
+          <thead>
+            <tr className="text-left font-alt text-xs font-medium uppercase text-pod-gray-200">
+              <th className="border-b border-pod-gray-100 px-1 py-3"></th>
+              <th className="border-b border-pod-gray-100 px-1 py-3">
+                Podcast
+              </th>
+              <th className="border-b border-pod-gray-100 px-1 py-3">
+                Integrantes
+              </th>
+              <th className="border-b border-pod-gray-100 px-1 py-3">Data</th>
+              <th className="border-b border-pod-gray-100 px-1 py-3">
+                Duração
+              </th>
+              <th className="border-b border-pod-gray-100 px-1 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {allEpisodes.map((episode) => (
+              <tr
+                key={episode.id}
+                className="h-16 border-b border-pod-gray-100 text-sm"
+              >
+                <td className="w-24 px-2">
+                  <Image
+                    width={120}
+                    height={120}
+                    src={episode.thumbnail}
+                    alt={episode.title}
+                    objectFit="cover"
+                    className="w-3/4 rounded-lg "
+                  />
+                </td>
+                <td className="w-[40%]">
+                  <Link
+                    href={`/episodes/${episode.id}`}
+                    className="font-alt text-base font-semibold text-pod-gray-800 hover:underline"
+                  >
+                    {episode.title}
+                  </Link>
+                </td>
+                <td>{episode.members}</td>
+                <td className="w-24">{episode.publishedAt}</td>
+                <td>{episode.durationAsString}</td>
+                <td>
+                  <button
+                    type="button"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-pod-gray-100 bg-white text-[0] duration-200 hover:brightness-95"
+                  >
+                    <Image
+                      src={playGreen}
+                      alt="Tocar episódio"
+                      className="h-5 w-5"
+                    />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
     </div>
   )
 }
