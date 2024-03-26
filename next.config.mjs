@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/golden-wind/nextlevelweek/05-podcastr/**.jpg',
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig

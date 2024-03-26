@@ -1,13 +1,20 @@
 import { api } from '@/services/api'
 import { cache } from 'react'
+import { format, parseISO } from 'date-fns'
+import { ptBR } from 'date-fns/locale/pt-BR'
+import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
+import playGreen from '../../public/play-green.svg'
+import Link from 'next/link'
+import Image from 'next/image'
 
 interface Episodes {
   id: string
   title: string
   members: string
-  published_at: Date
+  published_at: string
   thumbnail: string
   description: string
+  durationAsString: string
 
   file: {
     url: string
@@ -28,15 +35,89 @@ export default async function Home() {
       params: { _limit: 12, _sort: 'published_at', _order: '' },
     })
 
-    return data
+    const episodes = data.map((episode: Episodes) => {
+      return {
+        id: episode.id,
+        title: episode.title,
+        thumbnail: episode.thumbnail,
+        members: episode.members,
+        publishedAt: format(parseISO(episode.published_at), 'd MMM yy', {
+          locale: ptBR,
+        }),
+        duration: Number(episode.file.duration),
+        durationAsString: convertDurationToTimeString(
+          Number(episode.file.duration),
+        ),
+        description: episode.description,
+        url: episode.file.url,
+      }
+    })
+
+    const latestEpisodes = episodes.slice(0, 2)
+    const allEpisodes = episodes.slice(2, episodes.length)
+
+    return { latestEpisodes, allEpisodes }
   })
 
-  const data = await getData()
+  const { latestEpisodes, allEpisodes } = await getData()
 
   return (
-    <div>
-      <h1>Player</h1>
-      <p>{JSON.stringify(data[0].file.duration)}</p>
+    <div className="h-[calc(100vh-6.5rem)] overflow-y-scroll px-16">
+      <section>
+        <h2 className="mb-6 mt-12 font-alt font-semibold text-pod-gray-800">
+          Últimos lançamentos
+        </h2>
+
+        <ul className="grid grid-cols-2 gap-6">
+          {latestEpisodes.map((episode) => {
+            return (
+              <li
+                key={episode.id}
+                className="relative flex items-center rounded-s-3xl border border-pod-gray-100 bg-white p-5"
+              >
+                <Image
+                  width={192}
+                  height={192}
+                  src={episode.thumbnail}
+                  alt={episode.title}
+                  objectFit="cover"
+                  className="h-24 w-24 rounded-2xl"
+                />
+
+                <div className="ml-4 flex-1">
+                  <Link
+                    href={'/'}
+                    className="block font-alt font-semibold text-pod-gray-800 hover:underline"
+                  >
+                    {episode.title}
+                  </Link>
+                  <p className="mt-2 max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap text-sm">
+                    {episode.members}
+                  </p>
+                  <span className="relative mt-2 inline-block text-sm before:absolute before:-right-2 before:top-[50%] before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-sm before:bg-[#ddd]">
+                    {episode.publishedAt}
+                  </span>
+                  <span className="relative  inline-block pl-2 text-sm ">
+                    {episode.durationAsString}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  className="absolute bottom-8 right-8 flex h-10 w-10 items-center justify-center rounded-[0.675rem] border border-pod-gray-100 bg-white text-[0] duration-200 hover:brightness-95"
+                >
+                  <Image
+                    src={playGreen}
+                    alt="Tocar episódio"
+                    className="h-6 w-6"
+                  />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+      <section></section>
     </div>
   )
 }
