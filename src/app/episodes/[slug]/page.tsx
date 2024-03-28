@@ -1,12 +1,14 @@
-import { api } from '@/services/api'
-import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
+import Image from 'next/image'
+import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cache } from 'react'
-import Image from 'next/image'
+
+import { api } from '@/services/api'
+import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
+
 import arrowLeft from '../../../../public/arrow-left.svg'
 import play from '../../../../public/play.svg'
-import Link from 'next/link'
 
 interface Episode {
   id: string
@@ -27,8 +29,6 @@ interface Episode {
 interface Data {
   data: Episode
 }
-
-export const revalidate = 60 * 60 * 24
 
 export default async function Episode({
   params,
@@ -65,7 +65,7 @@ export default async function Episode({
         <Link href={'/'}>
           <button
             type="button"
-            className="absolute left-0 top-[36.66%] z-[5] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-xl bg-pod-purple-500 text-[0] duration-200 hover:brightness-95"
+            className="absolute left-0 top-[35.5%] z-[5] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-xl bg-pod-purple-500 text-[0] duration-200 hover:brightness-95"
           >
             <Image src={arrowLeft} alt="Voltar" />
           </button>
@@ -81,7 +81,7 @@ export default async function Episode({
         </div>
         <button
           type="button"
-          className="absolute right-0 top-[36.66%] z-[5] flex h-12 w-12 translate-x-1/2 items-center justify-center rounded-xl bg-pod-green-500 text-[0] duration-200 hover:brightness-95"
+          className="absolute right-0 top-[35.5%] z-[5] flex h-12 w-12 translate-x-1/2 items-center justify-center rounded-xl bg-pod-green-500 text-[0] duration-200 hover:brightness-95"
         >
           <Image src={play} alt="Tocar episódio" />
         </button>

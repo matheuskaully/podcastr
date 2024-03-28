@@ -1,11 +1,13 @@
-import { api } from '@/services/api'
-import { cache } from 'react'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
+
+import { api } from '@/services/api'
 import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
+
 import playGreen from '../../public/play-green.svg'
 import Link from 'next/link'
 import Image from 'next/image'
+import PlayButton from '@/components/PlayButton'
 
 interface Episodes {
   id: string
@@ -26,12 +28,14 @@ interface Data {
   data: Episodes[]
 }
 
-export const revalidate = 60 * 60 * 8
-
 export default async function Home() {
-  const getData = cache(async () => {
+  const getData = async () => {
     const { data }: Data = await api.get('episodes', {
-      params: { _limit: 12, _sort: 'published_at', _order: '' },
+      params: {
+        _limit: 12,
+        _sort: 'published_at',
+        _order: '',
+      },
     })
 
     const episodes = data.map((episode: Episodes) => {
@@ -55,7 +59,7 @@ export default async function Home() {
     const allEpisodes = episodes.slice(2, episodes.length)
 
     return { latestEpisodes, allEpisodes }
-  })
+  }
 
   const { latestEpisodes, allEpisodes } = await getData()
 
@@ -78,8 +82,7 @@ export default async function Home() {
                   height={192}
                   src={episode.thumbnail}
                   alt={episode.title}
-                  objectFit="cover"
-                  className="h-24 w-24 rounded-2xl"
+                  className="h-24 w-24 rounded-2xl object-cover"
                 />
 
                 <div className="ml-4 flex-1">
@@ -100,16 +103,13 @@ export default async function Home() {
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  className="absolute bottom-8 right-8 flex h-10 w-10 items-center justify-center rounded-[0.675rem] border border-pod-gray-100 bg-white text-[0] duration-200 hover:brightness-95"
-                >
-                  <Image
-                    src={playGreen}
-                    alt="Tocar episódio"
-                    className="h-6 w-6"
-                  />
-                </button>
+                <PlayButton
+                  duration={episode.duration}
+                  members={episode.members}
+                  thumbnail={episode.thumbnail}
+                  title={episode.title}
+                  url={episode.url}
+                />
               </li>
             )
           })}
@@ -144,14 +144,13 @@ export default async function Home() {
                 key={episode.id}
                 className="h-16 border-b border-pod-gray-100 text-sm"
               >
-                <td className="w-24 px-2">
+                <td className="h-10 w-14 px-2">
                   <Image
                     width={120}
                     height={120}
                     src={episode.thumbnail}
                     alt={episode.title}
-                    objectFit="cover"
-                    className="w-3/4 rounded-lg "
+                    className="h-full w-full rounded-lg object-cover"
                   />
                 </td>
                 <td className="w-[40%]">
