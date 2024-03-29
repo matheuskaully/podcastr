@@ -10,8 +10,8 @@ import 'rc-slider/assets/index.css'
 
 import playing from '../../public/playing.svg'
 import shuffle from '../../public/shuffle.svg'
-import playNext from '../../public/play-next.svg'
-import playPrevious from '../../public/play-previous.svg'
+import playNextImg from '../../public/play-next.svg'
+import playPreviousImg from '../../public/play-previous.svg'
 import playImg from '../../public/play.svg'
 import repeat from '../../public/repeat.svg'
 import pause from '../../public/pause.svg'
@@ -23,6 +23,8 @@ export default function Player() {
     isPlaying,
     togglePlay,
     setIsPlayingState,
+    playNext,
+    playPrevious,
   } = useContext(PlayerContext)
   const episode = episodeList[currentEpisodeIndex]
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -107,11 +109,12 @@ export default function Player() {
             <Image src={shuffle} alt="Embaralhar" />
           </button>
           <button
+            onClick={playPrevious}
             className="bg-transparent text-[0]"
             disabled={!episode}
             title="Tocar anterior"
           >
-            <Image src={playPrevious} alt="Tocar anterior" />
+            <Image src={playPreviousImg} alt="Tocar anterior" />
           </button>
           <button
             className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-pod-purple-400 ${episode && 'duration-200 hover:brightness-95'}`}
@@ -126,11 +129,12 @@ export default function Player() {
             )}
           </button>
           <button
+            onClick={playNext}
             className="bg-transparent text-[0]"
             disabled={!episode}
             title="Tocar próxima"
           >
-            <Image src={playNext} alt="Tocar próxima" />
+            <Image src={playNextImg} alt="Tocar próxima" />
           </button>
           <button
             className="bg-transparent text-[0]"

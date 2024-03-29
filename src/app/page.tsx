@@ -1,13 +1,12 @@
+import Link from 'next/link'
+import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 
 import { api } from '@/services/api'
 import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
-
-import playGreen from '../../public/play-green.svg'
-import Link from 'next/link'
-import Image from 'next/image'
-import PlayButton from '@/components/PlayButton'
+import PlayListButton from '@/components/PlayListButton'
+import PlayLastButton from '@/components/PlayLastButton'
 
 interface Episodes {
   id: string
@@ -38,22 +37,24 @@ export default async function Home() {
       },
     })
 
-    const episodes = data.map((episode: Episodes) => {
-      return {
-        id: episode.id,
-        title: episode.title,
-        thumbnail: episode.thumbnail,
-        members: episode.members,
-        publishedAt: format(parseISO(episode.published_at), 'd MMM yy', {
-          locale: ptBR,
-        }),
-        duration: Number(episode.file.duration),
-        durationAsString: convertDurationToTimeString(
-          Number(episode.file.duration),
-        ),
-        url: episode.file.url,
-      }
-    })
+    const episodes = data
+      .map((episode: Episodes) => {
+        return {
+          id: episode.id,
+          title: episode.title,
+          thumbnail: episode.thumbnail,
+          members: episode.members,
+          publishedAt: format(parseISO(episode.published_at), 'd MMM yy', {
+            locale: ptBR,
+          }),
+          duration: Number(episode.file.duration),
+          durationAsString: convertDurationToTimeString(
+            Number(episode.file.duration),
+          ),
+          url: episode.file.url,
+        }
+      })
+      .reverse()
 
     const latestEpisodes = episodes.slice(0, 2)
     const allEpisodes = episodes.slice(2, episodes.length)
@@ -63,6 +64,8 @@ export default async function Home() {
 
   const { latestEpisodes, allEpisodes } = await getData()
 
+  const episodeList = [...latestEpisodes, ...allEpisodes]
+
   return (
     <div className="h-[calc(100vh-6.5rem)] overflow-y-scroll px-16">
       <section>
@@ -71,7 +74,7 @@ export default async function Home() {
         </h2>
 
         <ul className="grid grid-cols-2 gap-6">
-          {latestEpisodes.map((episode) => {
+          {latestEpisodes.map((episode, index) => {
             return (
               <li
                 key={episode.id}
@@ -87,7 +90,7 @@ export default async function Home() {
 
                 <div className="ml-4 flex-1">
                   <Link
-                    href={'/'}
+                    href={`/episodes/${episode.id}`}
                     className="block font-alt font-semibold text-pod-gray-800 hover:underline"
                   >
                     {episode.title}
@@ -103,13 +106,7 @@ export default async function Home() {
                   </span>
                 </div>
 
-                <PlayButton
-                  duration={episode.duration}
-                  members={episode.members}
-                  thumbnail={episode.thumbnail}
-                  title={episode.title}
-                  url={episode.url}
-                />
+                <PlayLastButton episodeList={episodeList} index={index} />
               </li>
             )
           })}
@@ -139,7 +136,7 @@ export default async function Home() {
             </tr>
           </thead>
           <tbody>
-            {allEpisodes.map((episode) => (
+            {allEpisodes.map((episode, index) => (
               <tr
                 key={episode.id}
                 className="h-16 border-b border-pod-gray-100 text-sm"
@@ -165,16 +162,7 @@ export default async function Home() {
                 <td className="w-24">{episode.publishedAt}</td>
                 <td>{episode.durationAsString}</td>
                 <td>
-                  <button
-                    type="button"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-pod-gray-100 bg-white text-[0] duration-200 hover:brightness-95"
-                  >
-                    <Image
-                      src={playGreen}
-                      alt="Tocar episódio"
-                      className="h-5 w-5"
-                    />
-                  </button>
+                  <PlayListButton episodeList={episodeList} index={index} />
                 </td>
               </tr>
             ))}

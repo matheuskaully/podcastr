@@ -17,6 +17,9 @@ interface PlayerContextData {
   play: (episode: Episode) => void
   togglePlay: () => void
   setIsPlayingState: (state: boolean) => void
+  playList: (list: Episode[], index: number) => void
+  playNext: () => void
+  playPrevious: () => void
 }
 
 export const PlayerContext = createContext({} as PlayerContextData)
@@ -40,15 +43,38 @@ export default function PlayerProvider({ children }: { children: ReactNode }) {
     setIsPlaying(state)
   }
 
+  function playList(list: Episode[], index: number) {
+    setEpisodeList(list)
+    setCurrentEpisodeIndex(index)
+    setIsPlaying(true)
+  }
+
+  function playNext() {
+    const nextEpisodeIndex = currentEpisodeIndex + 1
+
+    if (nextEpisodeIndex < episodeList.length) {
+      setCurrentEpisodeIndex(currentEpisodeIndex + 1)
+    }
+  }
+
+  function playPrevious() {
+    if (currentEpisodeIndex > 0) {
+      setCurrentEpisodeIndex(currentEpisodeIndex - 1)
+    }
+  }
+
   return (
     <PlayerContext.Provider
       value={{
         episodeList,
         currentEpisodeIndex,
         play,
+        playNext,
+        playPrevious,
         isPlaying,
         togglePlay,
         setIsPlayingState,
+        playList,
       }}
     >
       {children}
