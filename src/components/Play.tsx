@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import playGreen from '../../public/play-green.svg'
+import playImg from '../../public/play.svg'
 import { useContext } from 'react'
 import { PlayerContext } from '@/contexts/PlayerContext'
 
@@ -20,9 +20,9 @@ export default function PlayButton(episode: Episode) {
     <button
       type="button"
       onClick={() => play(episode)}
-      className="absolute bottom-8 right-8 flex h-10 w-10 items-center justify-center rounded-[0.675rem] border border-pod-gray-100 bg-white text-[0] duration-200 hover:brightness-95"
+      className="absolute right-0 top-[35.5%] z-[5] flex h-12 w-12 translate-x-1/2 items-center justify-center rounded-xl bg-pod-green-500 text-[0] duration-200 hover:brightness-95"
     >
-      <Image src={playGreen} alt="Tocar episódio" className="h-6 w-6" />
+      <Image src={playImg} alt="Tocar episódio" className="h-6 w-6" />
     </button>
   )
 }

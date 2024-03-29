@@ -6,9 +6,9 @@ import { cache } from 'react'
 
 import { api } from '@/services/api'
 import { convertDurationToTimeString } from '@/utils/covertDurationToTimeString'
+import PlayButton from '@/components/Play'
 
 import arrowLeft from '../../../../public/arrow-left.svg'
-import play from '../../../../public/play.svg'
 
 interface Episode {
   id: string
@@ -60,50 +60,53 @@ export default async function Episode({
   const episode = await getData()
 
   return (
-    <div className="mx-auto max-w-[45rem] px-8 py-12">
-      <div className="relative">
-        <Link href={'/'}>
-          <button
-            type="button"
-            className="absolute left-0 top-[35.5%] z-[5] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-xl bg-pod-purple-500 text-[0] duration-200 hover:brightness-95"
-          >
-            <Image src={arrowLeft} alt="Voltar" />
-          </button>
-        </Link>
-        <div className="h-[160px] object-cover">
-          <Image
-            width={700}
-            height={160}
-            src={episode.thumbnail}
-            alt={episode.title}
-            className="h-full rounded-2xl object-cover"
+    <div className="mx-auto h-[calc(100vh-6.5rem)] max-w-full overflow-y-scroll">
+      <div className="mx-auto max-w-[45rem] px-8 py-12">
+        <div className="relative">
+          <Link href={'/'}>
+            <button
+              type="button"
+              className="absolute left-0 top-[35.5%] z-[5] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-xl bg-pod-purple-500 text-[0] duration-200 hover:brightness-95"
+            >
+              <Image src={arrowLeft} alt="Voltar" />
+            </button>
+          </Link>
+          <div className="h-[160px] object-cover">
+            <Image
+              width={700}
+              height={160}
+              src={episode.thumbnail}
+              alt={episode.title}
+              className="h-full rounded-2xl object-cover"
+            />
+          </div>
+          <PlayButton
+            duration={episode.duration}
+            members={episode.members}
+            title={episode.title}
+            thumbnail={episode.thumbnail}
+            url={episode.url}
           />
         </div>
-        <button
-          type="button"
-          className="absolute right-0 top-[35.5%] z-[5] flex h-12 w-12 translate-x-1/2 items-center justify-center rounded-xl bg-pod-green-500 text-[0] duration-200 hover:brightness-95"
-        >
-          <Image src={play} alt="Tocar episódio" />
-        </button>
+
+        <header className="mb-6 border-b border-pod-gray-100 pb-4">
+          <h1 className="mb-6 mt-8 font-alt font-semibold text-pod-gray-800">
+            {episode.title}
+          </h1>
+          <span className="inline-block text-sm">{episode.members}</span>
+          <span className="relative ml-4 inline-block pl-4 text-sm before:absolute before:left-0 before:top-[50%] before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-sm before:bg-[#ddd]">
+            {episode.publishedAt}
+          </span>
+          <span className="relative ml-4 inline-block pl-4 text-sm before:absolute before:left-0 before:top-[50%] before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-sm before:bg-[#ddd]">
+            {episode.durationAsString}
+          </span>
+        </header>
+
+        <div
+          dangerouslySetInnerHTML={{ __html: episode.description }}
+          className="mt-8 flex flex-col gap-6 leading-7"
+        />
       </div>
-
-      <header className="mb-6 border-b border-pod-gray-100 pb-4">
-        <h1 className="mb-6 mt-8 font-alt font-semibold text-pod-gray-800">
-          {episode.title}
-        </h1>
-        <span className="inline-block text-sm">{episode.members}</span>
-        <span className="relative ml-4 inline-block pl-4 text-sm before:absolute before:left-0 before:top-[50%] before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-sm before:bg-[#ddd]">
-          {episode.publishedAt}
-        </span>
-        <span className="relative ml-4 inline-block pl-4 text-sm before:absolute before:left-0 before:top-[50%] before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-sm before:bg-[#ddd]">
-          {episode.durationAsString}
-        </span>
-      </header>
-
-      <div
-        dangerouslySetInnerHTML={{ __html: episode.description }}
-        className="mt-8 flex flex-col gap-6 leading-7"
-      />
     </div>
   )
 }

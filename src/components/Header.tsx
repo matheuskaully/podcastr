@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import logo from '../../public/logo.svg'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
@@ -10,7 +11,9 @@ export default function Header() {
 
   return (
     <header className="flex h-[6.5rem] items-center border-b border-pod-gray-100 bg-white px-16 py-8">
-      <Image src={logo} alt="Podcastr" />
+      <Link href={'/'}>
+        <Image src={logo} alt="Podcastr" />
+      </Link>
       <p className="ml-8 border-l border-pod-gray-100 py-1 pl-8">
         O melhor para você ouvir, sempre
       </p>
